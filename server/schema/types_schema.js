@@ -18,9 +18,9 @@ const Person = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         name: { type: new GraphQLNonNull(GraphQLString) },
-        age: { type: GraphQLInt },
-        isMarried: { type: GraphQLBoolean },
-        gpa: { type: GraphQLFloat },
+        age: { type: new GraphQLNonNull(GraphQLInt) },
+        isMarried: { type: new GraphQLNonNull(GraphQLBoolean) },
+        gpa: { type: new GraphQLNonNull(GraphQLFloat) },
 
         justAType: {
             type: Person,
@@ -40,7 +40,7 @@ const RootQuery = new GraphQLObjectType({
             type: Person,
             resolve(parent, args) {
                 let personObj = {
-                    name: null,
+                    name: 'Antonio',
                     age: 35,
                     isMarried: true,
                     gpa: 4.0
