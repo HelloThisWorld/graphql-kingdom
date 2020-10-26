@@ -174,7 +174,7 @@ const Mutation = new GraphQLObjectType({
         UpdateUser: {
             type: UserType,
             args: {
-                id: { type: new GraphQLNonNull(GraphQLID) },
+                id: { type: new GraphQLNonNull(GraphQLString) },
                 name: { type: GraphQLString },
                 age: { type: GraphQLInt },
                 profession: { type: GraphQLString }
@@ -194,10 +194,27 @@ const Mutation = new GraphQLObjectType({
             }
         },
 
+        RemoveUser: {
+            type: UserType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(parent, args) {
+                let removedUser = User.findByIdAndRemove(
+                    args.id
+                ).exec();
+
+                if (!removedUser) {
+                    throw new Error("Error");
+                }
+
+                return removedUser;
+            }
+        },
+
         CreatePost: {
             type: PostType,
             args: {
-                // id: {type: GraphQLID}
                 comment: { type: new GraphQLNonNull(GraphQLString) },
                 userId: { type: new GraphQLNonNull(GraphQLID) }
             },
@@ -210,10 +227,46 @@ const Mutation = new GraphQLObjectType({
             }
         },
 
+        UpdatePost: {
+            type: PostType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                comment: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            resolve(parent, args) {
+                return updatedPost = Post.findByIdAndUpdate(
+                    args.id,
+                    {
+                        $set: {
+                            comment: args.comment
+                        }
+                    },
+                    { new: true } // send back the updated objectType
+                );
+            }
+        },
+
+        RemovePost: {
+            type: PostType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(parent, args) {
+                let removedPost = Post.findByIdAndRemove(
+                    args.id
+                ).exec();
+
+                if (!removedPost) {
+                    throw new Error("Error");
+                }
+
+                return removedPost;
+            }
+        },
+
         CreateHobby: {
             type: HobbyType,
             args: {
-                // id: {type: GraphQLID}
                 title: { type: new GraphQLNonNull(GraphQLString) },
                 description: { type: new GraphQLNonNull(GraphQLString) },
                 userId: { type: new GraphQLNonNull(GraphQLID) }
@@ -226,7 +279,47 @@ const Mutation = new GraphQLObjectType({
                 });
                 return hobby.save();
             }
+        },
+
+        UpdateHobby: {
+            type: HobbyType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                title: { type: new GraphQLNonNull(GraphQLString) },
+                description: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(parent, args) {
+                return updatedHobby = Hobby.findByIdAndUpdate(
+                    args.id,
+                    {
+                        $set: {
+                            title: args.title,
+                            description: args.description
+                        }
+                    },
+                    { new: true } // send back the updated objectType
+                )
+            }
+        },
+
+        RemoveHobby: {
+            type: HobbyType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(parent, args) {
+                let removedHobby = Hobby.findByIdAndRemove(
+                    args.id
+                ).exec();
+
+                if (!removedHobby) {
+                    throw new Error("Error");
+                }
+
+                return removedHobby;
+            }
         }
+
     }
 });
 
